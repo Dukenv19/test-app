@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Access</title>
+</head>
+<body>
+    <h1>Camera Access</h1>
+    <video id="camera-stream" width="100%" autoplay></video>
+    <button id="capture-btn">Capture Image</button>
+    
+    <script>
+        // Function to access the camera stream
+        function startCamera() {
+            // Access the device camera
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+            .then(function(stream) {
+                var videoElement = document.getElementById('camera-stream');
+                // Attach the camera stream to the video element
+                videoElement.srcObject = stream;
+            })
+            .catch(function(error) {
+                console.error('Error accessing the camera: ', error);
+            });
+        }
+
+        // Function to capture image
+        function captureImage() {
+            var videoElement = document.getElementById('camera-stream');
+            var canvas = document.createElement('canvas');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            var context = canvas.getContext('2d');
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            var imageURL = canvas.toDataURL('image/png');
+            // Do something with the captured image URL
+            console.log('Captured image URL: ', imageURL);
+        }
+
+        // Start camera when the page loads
+        window.onload = function() {
+            startCamera();
+            document.getElementById('capture-btn').addEventListener('click', captureImage);
+        };
+    </script>
+</body>
+</html>
